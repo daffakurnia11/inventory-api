@@ -9,9 +9,10 @@ class TransactionRepository {
     const [rows] = await db
       .promise()
       .query<RowDataPacket[]>(TransactionQueries.listTransactionsQuery);
+    if (rows.length === 0) return null;
     return rows as Transaction[];
   }
-  
+
   async create(transactionData: Transaction): Promise<Transaction | null> {
     const id = uuidv4();
     await db
@@ -34,6 +35,7 @@ class TransactionRepository {
       .query<RowDataPacket[]>(TransactionQueries.findTransactionByIdQuery, [
         id,
       ]);
+    if (rows.length === 0) return null;
     return rows[0] as Transaction;
   }
 }

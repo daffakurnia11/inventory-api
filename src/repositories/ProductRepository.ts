@@ -13,13 +13,6 @@ class ProductRepository {
     return rows as Product[];
   }
 
-  async listByCategory(categoryId: string): Promise<Product[] | null> {
-    const [rows] = await db
-      .promise()
-      .query<RowDataPacket[]>(ProductQueries.listByCategoryQuery, [categoryId]);
-    return rows as Product[];
-  }
-
   async findById(id: string): Promise<Product | null> {
     const [rows] = await db
       .promise()

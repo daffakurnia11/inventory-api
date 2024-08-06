@@ -1,10 +1,66 @@
 class CategoryQueries {
   static listCategoriesQuery = `
-    SELECT * FROM product_categories ORDER BY created_at
+    SELECT 
+      c.id AS ID, 
+      c.category_name, 
+      c.category_description, 
+      c.created_at, 
+      c.updated_at,
+      COALESCE(
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', p.id,
+            'product_name', p.product_name,
+            'product_description', p.product_description,
+            'product_image', p.product_image,
+            'stock', p.stock,
+            'created_at', p.created_at,
+            'updated_at', p.updated_at
+          )
+        ), JSON_ARRAY()
+      ) AS products
+    FROM 
+      product_categories c 
+    LEFT JOIN 
+      (SELECT * FROM products ORDER BY created_at DESC) p 
+    ON 
+      c.id = p.category_id 
+    GROUP BY 
+      c.id, c.category_name, c.category_description, c.created_at, c.updated_at
+    ORDER BY 
+      c.created_at
+    DESC
   `;
 
   static findCategoryByIdQuery = `
-    SELECT * FROM product_categories WHERE id = ?
+    SELECT 
+      c.id AS ID, 
+      c.category_name, 
+      c.category_description, 
+      c.created_at, 
+      c.updated_at,
+      COALESCE(
+        JSON_ARRAYAGG(
+          JSON_OBJECT(
+            'id', p.id,
+            'product_name', p.product_name,
+            'product_description', p.product_description,
+            'product_image', p.product_image,
+            'stock', p.stock,
+            'created_at', p.created_at,
+            'updated_at', p.updated_at
+          )
+        ), JSON_ARRAY()
+      ) AS products
+    FROM 
+      product_categories c 
+    LEFT JOIN 
+      (SELECT * FROM products ORDER BY created_at DESC) p 
+    ON 
+      c.id = p.category_id 
+    WHERE c.id = ?
+    GROUP BY 
+      c.id, c.category_name, c.category_description, c.created_at, c.updated_at
   `;
 
   static createCategoryQuery = `

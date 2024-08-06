@@ -1,48 +1,50 @@
 class ProductQueries {
   static listProductsQuery = `
     SELECT 
-      products.id, 
-      products.product_name, 
-      products.product_description, 
-      products.product_image, 
-      products.stock, 
-      products.created_at, 
-      products.updated_at, 
-      product_categories.category_name as category_name, 
-      product_categories.category_description as category_description 
-    FROM products 
-    JOIN product_categories ON products.category_id = product_categories.id 
-    ORDER BY products.created_at
-  `;
-
-  static listByCategoryQuery = `
-    SELECT 
-      id, 
-      product_name, 
-      product_description, 
-      product_image, 
-      stock, 
-      created_at, 
-      updated_at 
-    FROM products 
-    WHERE category_id = ? 
-    ORDER BY created_at
+      p.id AS id, 
+      p.product_name, 
+      p.product_description, 
+      p.product_image, 
+      p.stock, 
+      p.created_at, 
+      p.updated_at, 
+      JSON_OBJECT(
+        'id', pc.id,
+        'category_name', pc.category_name,
+        'category_description', pc.category_description
+      ) AS category
+    FROM 
+      products p
+    JOIN 
+      product_categories pc ON p.category_id = pc.id 
+    ORDER BY 
+      p.created_at
+    DESC
   `;
 
   static findByIdQuery = `
     SELECT 
-      products.id, 
-      products.product_name, 
-      products.product_description, 
-      products.product_image, 
-      products.stock, 
-      products.created_at, 
-      products.updated_at, 
-      product_categories.category_name as category_name, 
-      product_categories.category_description as category_description  
-    FROM products
-    JOIN product_categories ON products.category_id = product_categories.id
-    WHERE products.id = ?;
+      p.id AS id, 
+      p.product_name, 
+      p.product_description, 
+      p.product_image, 
+      p.stock, 
+      p.created_at, 
+      p.updated_at, 
+      JSON_OBJECT(
+        'id', pc.id,
+        'category_name', pc.category_name,
+        'category_description', pc.category_description
+      ) AS category
+    FROM 
+      products p
+    JOIN 
+      product_categories pc ON p.category_id = pc.id 
+    WHERE 
+      p.id = ?
+    ORDER BY 
+      p.created_at
+    DESC
   `;
 
   static createProductQuery = `

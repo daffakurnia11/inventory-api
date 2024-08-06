@@ -11,18 +11,7 @@ class CategoryRepository {
       .promise()
       .query<RowDataPacket[]>(CategoryQueries.listCategoriesQuery);
     if (rows.length === 0) return null;
-
-    const categoriesWithProducts = await Promise.all(
-      rows.map(async (row) => {
-        const products = await ProductRepository.listByCategory(row.id);
-        return {
-          ...row,
-          products: products,
-        };
-      })
-    );
-
-    return categoriesWithProducts as Category[];
+    return rows as Category[];
   }
 
   async findById(id: string): Promise<Category | null> {
@@ -30,12 +19,7 @@ class CategoryRepository {
       .promise()
       .query<RowDataPacket[]>(CategoryQueries.findCategoryByIdQuery, [id]);
     if (rows.length === 0) return null;
-
-    const products = await ProductRepository.listByCategory(rows[0].id);
-    return {
-      ...rows[0],
-      products: products,
-    } as Category;
+    return rows[0] as Category;
   }
 
   async create(categoryData: Category): Promise<Category | null> {
