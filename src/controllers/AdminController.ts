@@ -46,6 +46,21 @@ class AdminController {
       next(error);
     }
   }
+
+  async changePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+      const adminId = (req as any).user.id;
+      await AdminService.changePassword(
+        adminId,
+        req.body.oldPassword,
+        req.body.newPassword,
+        req.body.confirmPassword
+      );
+      res.success(null, "Password changed successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AdminController();

@@ -3,13 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { jwtSecret } from "../config/jwt";
 import { Admin } from "../models/Admin";
-import { AuthenticationError, EmailAlreadyRegisteredError } from "../errors";
+import { AuthenticationError, BadRequestError } from "../errors";
 
 class AdminService {
   async register(adminData: Admin) {
     const emailExists = await AdminRepository.emailExists(adminData.email);
     if (emailExists) {
-      throw new EmailAlreadyRegisteredError("Email already registered");
+      throw new BadRequestError("Email already registered");
     }
 
     const hashedPassword = await bcrypt.hash(adminData.password, 10);
@@ -40,6 +40,26 @@ class AdminService {
 
   async updateProfile(id: string, adminData: Admin) {
     return AdminRepository.update(id, adminData);
+  }
+
+  async changePassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) {
+    if (newPassword !== confirmPassword)
+      throw new BadRequestError("Passwords do not match");
+
+    const password = await AdminRepository.getPasswordById(id);
+    if (!password) throw new AuthenticationError("User not found");
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, password);
+    if (!isPasswordValid) throw new AuthenticationError("Wrong password");
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await AdminRepository.updatePassword(id, hashedPassword);
   }
 }
 

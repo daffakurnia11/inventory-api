@@ -4,6 +4,7 @@ import {
   registerValidation,
   loginValidation,
   updateProfileValidation,
+  changePasswordValidation,
 } from "../middlewares/validators/AdminValidator";
 import { handleValidation } from "../middlewares/validate";
 import { authenticateToken } from "../middlewares/auth";
@@ -25,6 +26,13 @@ router.patch(
   updateProfileValidation,
   handleValidation,
   AdminController.updateProfile
+);
+router.patch(
+  "/change-password",
+  authenticateToken,
+  changePasswordValidation,
+  handleValidation,
+  AdminController.changePassword
 );
 
 export default router;

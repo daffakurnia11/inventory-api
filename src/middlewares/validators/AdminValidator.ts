@@ -57,7 +57,6 @@ export const registerValidation = [
       }
       return true;
     }),
-    
 ];
 
 export const loginValidation = [
@@ -101,4 +100,29 @@ export const updateProfileValidation = [
     .withMessage("Gender is required")
     .isIn(["Male", "Female", "Other"])
     .withMessage("Invalid gender"),
+];
+
+export const changePasswordValidation = [
+  body("oldPassword")
+    .not()
+    .isEmpty()
+    .withMessage("Old password is required")
+    .isLength({ min: 8 })
+    .withMessage("Old password must be at least 6 characters long"),
+  body("newPassword")
+    .not()
+    .isEmpty()
+    .withMessage("New Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 6 characters long"),
+  body("confirmPassword")
+    .not()
+    .isEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
 ];

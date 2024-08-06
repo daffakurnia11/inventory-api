@@ -63,6 +63,23 @@ class AdminRepository {
         ]
       );
   }
+
+  async getPasswordById(id: string): Promise<string | null> {
+    const [rows] = await db
+      .promise()
+      .query<RowDataPacket[]>("SELECT password FROM admins WHERE id = ?", [id]);
+    if (rows.length === 0) return null;
+    return rows[0].password;
+  }
+
+  async updatePassword(id: string, password: string): Promise<void> {
+    await db
+      .promise()
+      .query<ResultSetHeader>("UPDATE admins SET password = ? WHERE id = ?", [
+        password,
+        id,
+      ]);
+  }
 }
 
 export default new AdminRepository();

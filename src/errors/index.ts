@@ -1,10 +1,10 @@
-class EmailAlreadyRegisteredError extends Error {
+class BadRequestError extends Error {
   statusCode: number;
 
   constructor(message: string) {
     super(message);
     this.statusCode = 400;
-    Object.setPrototypeOf(this, EmailAlreadyRegisteredError.prototype);
+    Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }
 
@@ -18,4 +18,4 @@ class AuthenticationError extends Error {
   }
 }
 
-export { EmailAlreadyRegisteredError, AuthenticationError };
+export { BadRequestError, AuthenticationError };
