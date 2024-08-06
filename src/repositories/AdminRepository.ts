@@ -2,41 +2,36 @@ import { v4 as uuidv4 } from "uuid";
 import db from "../config/database";
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 import { Admin } from "../models/Admin";
+import AdminQueries from "../queries/AdminQueries";
 
 class AdminRepository {
   async create(adminData: Admin): Promise<string> {
     const id = uuidv4();
     await db
       .promise()
-      .query<ResultSetHeader>(
-        "INSERT INTO admins (id, first_name, last_name, email, birth_date, gender, password) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [
-          id,
-          adminData.firstName,
-          adminData.lastName,
-          adminData.email,
-          adminData.birthDate,
-          adminData.gender,
-          adminData.password,
-        ]
-      );
+      .query<ResultSetHeader>(AdminQueries.createAdminQuery, [
+        id,
+        adminData.firstName,
+        adminData.lastName,
+        adminData.email,
+        adminData.birthDate,
+        adminData.gender,
+        adminData.password,
+      ]);
     return id;
   }
 
   async findByEmail(email: string): Promise<RowDataPacket> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT * FROM admins WHERE email = ?", [email]);
+      .query<RowDataPacket[]>(AdminQueries.findByEmailQuery, [email]);
     return rows[0];
   }
 
   async findById(id: string): Promise<Admin | null> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>(
-        "SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender, created_at, updated_at FROM admins WHERE id = ?",
-        [id]
-      );
+      .query<RowDataPacket[]>(AdminQueries.findByIdQuery, [id]);
     if (rows.length === 0) return null;
     return rows[0] as Admin;
   }
@@ -44,30 +39,27 @@ class AdminRepository {
   async emailExists(email: string): Promise<boolean> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT 1 FROM admins WHERE email = ?", [email]);
+      .query<RowDataPacket[]>(AdminQueries.emailExistsQuery, [email]);
     return rows.length > 0;
   }
 
   async update(id: string, adminData: Admin): Promise<void> {
     await db
       .promise()
-      .query<ResultSetHeader>(
-        "UPDATE admins SET first_name = ?, last_name = ?, email = ?, birth_date = ?, gender = ? WHERE id = ?",
-        [
-          adminData.firstName,
-          adminData.lastName,
-          adminData.email,
-          adminData.birthDate,
-          adminData.gender,
-          id,
-        ]
-      );
+      .query<ResultSetHeader>(AdminQueries.updateAdminQuery, [
+        adminData.firstName,
+        adminData.lastName,
+        adminData.email,
+        adminData.birthDate,
+        adminData.gender,
+        id,
+      ]);
   }
 
   async getPasswordById(id: string): Promise<string | null> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT password FROM admins WHERE id = ?", [id]);
+      .query<RowDataPacket[]>(AdminQueries.getPasswordByIdQuery, [id]);
     if (rows.length === 0) return null;
     return rows[0].password;
   }
@@ -75,10 +67,7 @@ class AdminRepository {
   async updatePassword(id: string, password: string): Promise<void> {
     await db
       .promise()
-      .query<ResultSetHeader>("UPDATE admins SET password = ? WHERE id = ?", [
-        password,
-        id,
-      ]);
+      .query<ResultSetHeader>(AdminQueries.updatePasswordQuery, [password, id]);
   }
 }
 
