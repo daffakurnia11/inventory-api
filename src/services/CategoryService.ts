@@ -11,6 +11,11 @@ class CategoryService {
     const category = await CategoryRepository.create(categoryData);
     return category;
   }
+
+  async get(id: string) {
+    const category = await CategoryRepository.findById(id);
+    return category;
+  }
 }
 
 export default new CategoryService();

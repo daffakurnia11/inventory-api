@@ -7,5 +7,6 @@ const router = express.Router();
 
 router.get("/", CategoryController.list);
 router.post("/", createValidation, handleValidation, CategoryController.create);
+router.get("/:id", CategoryController.get);
 
 export default router;
