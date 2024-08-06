@@ -33,6 +33,10 @@ class AdminService {
     });
     return { token, user: admin };
   }
+
+  async findById(id: string): Promise<Admin | null> {
+    return AdminRepository.findById(id);
+  }
 }
 
 export default new AdminService();

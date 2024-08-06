@@ -12,7 +12,7 @@ export const authenticateToken = (
 
   jwt.verify(token, jwtSecret, (err, user) => {
     if (err) return res.sendStatus(403);
-    req.user = user;
+    (req as any).user = user;
     next();
   });
 };
