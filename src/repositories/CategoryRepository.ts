@@ -10,6 +10,7 @@ class CategoryRepository {
     const [rows] = await db
       .promise()
       .query<RowDataPacket[]>(CategoryQueries.listCategoriesQuery);
+    if (rows.length === 0) return null;
 
     const categoriesWithProducts = await Promise.all(
       rows.map(async (row) => {
@@ -29,7 +30,12 @@ class CategoryRepository {
       .promise()
       .query<RowDataPacket[]>(CategoryQueries.findCategoryByIdQuery, [id]);
     if (rows.length === 0) return null;
-    return rows[0] as Category;
+
+    const products = await ProductRepository.listByCategory(rows[0].id);
+    return {
+      ...rows[0],
+      products: products,
+    } as Category;
   }
 
   async create(categoryData: Category): Promise<Category | null> {

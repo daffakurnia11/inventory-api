@@ -30,8 +30,36 @@ class ProductQueries {
   `;
 
   static findByIdQuery = `
-    SELECT * FROM products WHERE id = ?
+    SELECT 
+      products.id, 
+      products.product_name, 
+      products.product_description, 
+      products.product_image, 
+      products.stock, 
+      products.created_at, 
+      products.updated_at, 
+      product_categories.category_name as category_name, 
+      product_categories.category_description as category_description  
+    FROM products
+    JOIN product_categories ON products.category_id = product_categories.id
+    WHERE products.id = ?;
   `;
+
+  // static findByIdQuery = `
+  //   SELECT
+  //     products.id,
+  //     products.product_name,
+  //     products.product_description,
+  //     products.product_image,
+  //     products.stock,
+  //     products.created_at,
+  //     products.updated_at,
+  //     product_categories.category_name as category_name,
+  //     product_categories.category_description as category_description
+  //   FROM products
+  //   WHERE products.id = ?
+  //   JOIN product_categories ON products.category_id = product_categories.id
+  // `;
 
   static createProductQuery = `
     INSERT INTO products (
