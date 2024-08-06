@@ -23,13 +23,24 @@ class CategoryRepository {
 
   async create(categoryData: Category): Promise<Category | null> {
     const id = uuidv4();
-    const [rows] = await db
+    await db
       .promise()
       .query<ResultSetHeader>(
         "INSERT INTO product_categories (id, category_name, category_description) VALUES (?, ?, ?)",
         [id, categoryData.category_name, categoryData.category_description]
       );
 
+    const category = await this.findById(id);
+    return category;
+  }
+
+  async update(id: string, categoryData: Category): Promise<Category | null> {
+    await db
+      .promise()
+      .query<ResultSetHeader>(
+        "UPDATE product_categories SET category_name = ?, category_description = ? WHERE id = ?",
+        [categoryData.category_name, categoryData.category_description, id]
+      );
     const category = await this.findById(id);
     return category;
   }

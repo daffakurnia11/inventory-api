@@ -16,6 +16,11 @@ class CategoryService {
     const category = await CategoryRepository.findById(id);
     return category;
   }
+
+  async update(id: string, categoryData: Category) {
+    const category = await CategoryRepository.update(id, categoryData);
+    return category;
+  }
 }
 
 export default new CategoryService();
