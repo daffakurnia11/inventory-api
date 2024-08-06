@@ -16,6 +16,8 @@ router.post(
   AdminController.register
 );
 router.post("/login", loginValidation, handleValidation, AdminController.login);
+
 router.get("/profile", authenticateToken, AdminController.getProfile);
+router.patch("/profile", authenticateToken, AdminController.updateProfile);
 
 export default router;

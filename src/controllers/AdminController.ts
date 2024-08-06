@@ -36,6 +36,16 @@ class AdminController {
       next(error);
     }
   }
+
+  async updateProfile(req: Request, res: Response, next: NextFunction) {
+    try {
+      const adminId = (req as any).user.id;
+      await AdminService.updateProfile(adminId, req.body);
+      res.success(req.body, "Profile updated successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AdminController();

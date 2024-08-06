@@ -33,7 +33,10 @@ class AdminRepository {
   async findById(id: string): Promise<Admin | null> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender FROM admins WHERE id = ?", [id]);
+      .query<RowDataPacket[]>(
+        "SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender FROM admins WHERE id = ?",
+        [id]
+      );
     if (rows.length === 0) return null;
     return rows[0] as Admin;
   }
@@ -43,6 +46,22 @@ class AdminRepository {
       .promise()
       .query<RowDataPacket[]>("SELECT 1 FROM admins WHERE email = ?", [email]);
     return rows.length > 0;
+  }
+
+  async update(id: string, adminData: Admin): Promise<void> {
+    await db
+      .promise()
+      .query<ResultSetHeader>(
+        "UPDATE admins SET first_name = ?, last_name = ?, email = ?, birth_date = ?, gender = ? WHERE id = ?",
+        [
+          adminData.firstName,
+          adminData.lastName,
+          adminData.email,
+          adminData.birthDate,
+          adminData.gender,
+          id,
+        ]
+      );
   }
 }
 

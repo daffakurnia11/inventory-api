@@ -37,6 +37,10 @@ class AdminService {
   async findById(id: string): Promise<Admin | null> {
     return AdminRepository.findById(id);
   }
+
+  async updateProfile(id: string, adminData: Admin) {
+    return AdminRepository.update(id, adminData);
+  }
 }
 
 export default new AdminService();
