@@ -1,9 +1,11 @@
 import * as dotenv from "dotenv";
 import express from "express";
 import bodyParser from "body-parser";
-import adminRoutes from "./routes/AdminRoute";
-import { responseHandler } from "./middlewares/responseHandler";
+import authRoute from "./routes/AuthRoute";
+import adminRoute from "./routes/AdminRoute";
 import { errorHandler } from "./middlewares/errorHandler";
+import { authenticateToken } from "./middlewares/auth";
+import { responseHandler } from "./middlewares/responseHandler";
 
 dotenv.config();
 
@@ -12,7 +14,8 @@ const port = process.env.API_PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(responseHandler);
-app.use("/api", adminRoutes);
+app.use("/api", authRoute);
+app.use("/api/admin", authenticateToken, adminRoute);
 app.use(errorHandler);
 
 app.listen(port, () => {
