@@ -25,6 +25,10 @@ class ProductService {
   async delete(id: string) {
     await ProductRepository.delete(id);
   }
+
+  async stockUpdate(id: string, stock: number, state: "In" | "Out") {
+    await ProductRepository.stockUpdate(id, stock, state);
+  }
 }
 
 export default new ProductService();

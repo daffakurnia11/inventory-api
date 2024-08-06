@@ -4,6 +4,6 @@ export interface Admin {
   lastName: string;
   email: string;
   birthDate: string;
-  gender: string;
+  gender: "Male" | "Female" | "Other";
   password: string;
 }

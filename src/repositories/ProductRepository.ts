@@ -3,6 +3,7 @@ import db from "../config/database";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Product } from "../models/Product";
 import ProductQueries from "../queries/ProductQueries";
+import { BadRequestError } from "../errors";
 
 class ProductRepository {
   async list(): Promise<Product[] | null> {
@@ -64,6 +65,25 @@ class ProductRepository {
     await db
       .promise()
       .query<ResultSetHeader>(ProductQueries.deleteProductQuery, [id]);
+  }
+
+  async stockUpdate(id: string, stock: number, state: "In" | "Out") {
+    const product = await this.findById(id);
+    if (!product) throw new BadRequestError("Product not found");
+    
+    if (state === "Out") {
+      if (product.stock < stock) throw new BadRequestError("Insufficient stock");
+      stock = stock * -1;
+    }
+
+    const newStock = product.stock + stock;
+
+    await db
+      .promise()
+      .query<ResultSetHeader>("UPDATE products SET stock = ? WHERE id = ?", [
+        newStock,
+        id,
+      ]);
   }
 }
 
