@@ -42,6 +42,16 @@ class CategoryController {
       next(error);
     }
   }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      await CategoryService.delete(id);
+      res.success(null, "Category deleted successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new CategoryController();

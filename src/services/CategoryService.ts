@@ -21,6 +21,10 @@ class CategoryService {
     const category = await CategoryRepository.update(id, categoryData);
     return category;
   }
+
+  async delete(id: string) {
+    await CategoryRepository.delete(id);
+  }
 }
 
 export default new CategoryService();

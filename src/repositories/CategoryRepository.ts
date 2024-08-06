@@ -44,6 +44,14 @@ class CategoryRepository {
     const category = await this.findById(id);
     return category;
   }
+
+  async delete(id: string): Promise<void> {
+    await db
+      .promise()
+      .query<ResultSetHeader>("DELETE FROM product_categories WHERE id = ?", [
+        id,
+      ]);
+  }
 }
 
 export default new CategoryRepository();

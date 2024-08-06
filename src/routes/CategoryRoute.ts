@@ -9,5 +9,6 @@ router.get("/", CategoryController.list);
 router.post("/", createValidation, handleValidation, CategoryController.create);
 router.get("/:id", CategoryController.get);
 router.patch("/:id", CategoryController.update);
+router.delete("/:id", CategoryController.delete);
 
 export default router;
