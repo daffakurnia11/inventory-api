@@ -34,7 +34,7 @@ class AdminRepository {
     const [rows] = await db
       .promise()
       .query<RowDataPacket[]>(
-        "SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender FROM admins WHERE id = ?",
+        "SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender, created_at, updated_at FROM admins WHERE id = ?",
         [id]
       );
     if (rows.length === 0) return null;
