@@ -38,6 +38,37 @@ class TransactionRepository {
     if (rows.length === 0) return null;
     return rows[0] as Transaction;
   }
+
+  async bulkCreate(
+    transactionsData: Transaction[]
+  ): Promise<Transaction[] | null> {
+    const ids = transactionsData.map(() => uuidv4());
+
+    const queryString = transactionsData
+      .map(() => "(?, ?, ?, ?, ?)")
+      .join(", ");
+
+    const values = transactionsData.flatMap((transaction, index) => [
+      ids[index],
+      transaction.user_id,
+      transaction.product_id,
+      transaction.quantity,
+      transaction.state,
+    ]);
+
+    await db
+      .promise()
+      .query<ResultSetHeader>(
+        TransactionQueries.bulkCreateTransactionsQuery(queryString),
+        values
+      );
+
+    const createdTransactions = await Promise.all(
+      ids.map((id) => this.findById(id))
+    );
+
+    return createdTransactions as Transaction[];
+  }
 }
 
 export default new TransactionRepository();

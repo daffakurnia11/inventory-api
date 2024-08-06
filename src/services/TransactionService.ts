@@ -11,6 +11,11 @@ class TransactionService {
     const transaction = await TransactionRepository.create(transactionData);
     return transaction;
   }
+
+  async bulkCreate(transactionsData: Transaction[]) {
+    const transaction = await TransactionRepository.bulkCreate(transactionsData);
+    return transaction;
+  }
 }
 
 export default new TransactionService();

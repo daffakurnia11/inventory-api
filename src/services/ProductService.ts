@@ -1,4 +1,5 @@
 import { Product } from "../models/Product";
+import { Transaction } from "../models/Transaction";
 import ProductRepository from "../repositories/ProductRepository";
 
 class ProductService {
@@ -28,6 +29,10 @@ class ProductService {
 
   async stockUpdate(id: string, stock: number, state: "In" | "Out") {
     await ProductRepository.stockUpdate(id, stock, state);
+  }
+
+  async bulkStockUpdate(transactions: Transaction[]) {
+    await ProductRepository.bulkStockUpdate(transactions);
   }
 }
 

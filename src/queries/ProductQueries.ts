@@ -72,6 +72,10 @@ class ProductQueries {
   static deleteProductQuery = `
     DELETE FROM products WHERE id = ?
   `;
+
+  static stockUpdateProductQuery = `
+    UPDATE products SET stock = stock + ? WHERE id = ?
+  `;
 }
 
 export default ProductQueries;

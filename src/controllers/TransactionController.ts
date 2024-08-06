@@ -26,6 +26,28 @@ class TransactionController {
       next(error);
     }
   }
+
+  async bulkCreate(req: Request, res: Response, next: NextFunction) {
+    try {
+      const adminId = (req as any).user.id;
+      const transactions = req.body.transactions.map((transaction: any) => ({
+        ...transaction,
+        user_id: adminId,
+      }));
+
+      await ProductService.bulkStockUpdate(transactions);
+
+      const createdTransactions = await TransactionService.bulkCreate(transactions);
+
+      if (!createdTransactions) {
+        throw new BadRequestError("Transactions not created");
+      }
+
+      res.success(createdTransactions, "Transactions created successfully");
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new TransactionController();

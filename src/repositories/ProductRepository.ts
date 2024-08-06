@@ -4,6 +4,7 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Product } from "../models/Product";
 import ProductQueries from "../queries/ProductQueries";
 import { BadRequestError } from "../errors";
+import { Transaction } from "../models/Transaction";
 
 class ProductRepository {
   async list(): Promise<Product[] | null> {
@@ -63,20 +64,29 @@ class ProductRepository {
   async stockUpdate(id: string, stock: number, state: "In" | "Out") {
     const product = await this.findById(id);
     if (!product) throw new BadRequestError("Product not found");
-    
+
     if (state === "Out") {
-      if (product.stock < stock) throw new BadRequestError("Insufficient stock");
+      if (product.stock < stock)
+        throw new BadRequestError("Insufficient stock");
       stock = stock * -1;
     }
 
-    const newStock = product.stock + stock;
-
     await db
       .promise()
-      .query<ResultSetHeader>("UPDATE products SET stock = ? WHERE id = ?", [
-        newStock,
+      .query<ResultSetHeader>(ProductQueries.stockUpdateProductQuery, [
+        stock,
         id,
       ]);
+  }
+
+  async bulkStockUpdate(transactions: Transaction[]) {
+    transactions.map(async (transaction) => {
+      await this.stockUpdate(
+        transaction.product_id,
+        transaction.quantity,
+        transaction.state
+      );
+    });
   }
 }
 

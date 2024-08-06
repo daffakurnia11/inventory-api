@@ -40,7 +40,7 @@ class TransactionQueries {
   `;
 
   static findTransactionByIdQuery = `
-  SELECT 
+    SELECT 
       t.id AS id,
       JSON_OBJECT(
         'id', a.id,
@@ -89,6 +89,16 @@ class TransactionQueries {
       quantity,
       state
     ) VALUES (?, ?, ?, ?, ?)
+  `;
+
+  static bulkCreateTransactionsQuery = (values: string) => `
+    INSERT INTO transactions (
+      id,
+      user_id, 
+      product_id,
+      quantity,
+      state
+    ) VALUES ${values};
   `;
 }
 
