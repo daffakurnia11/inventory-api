@@ -1,14 +1,14 @@
 import express from "express";
 import CategoryController from "../controllers/CategoryController";
-import { createValidation } from "../middlewares/validators/CategoryValidator";
+import { categoryValidation } from "../middlewares/validators/CategoryValidator";
 import { handleValidation } from "../middlewares/validate";
 
 const router = express.Router();
 
 router.get("/", CategoryController.list);
-router.post("/", createValidation, handleValidation, CategoryController.create);
+router.post("/", categoryValidation, handleValidation, CategoryController.create);
 router.get("/:id", CategoryController.get);
-router.patch("/:id", CategoryController.update);
+router.patch("/:id", categoryValidation, handleValidation, CategoryController.update);
 router.delete("/:id", CategoryController.delete);
 
 export default router;

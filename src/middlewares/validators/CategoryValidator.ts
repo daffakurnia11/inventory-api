@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const createValidation = [
+export const categoryValidation = [
   body("category_name")
     .not()
     .isEmpty()
