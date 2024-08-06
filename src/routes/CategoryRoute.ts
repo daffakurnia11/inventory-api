@@ -5,6 +5,7 @@ import { handleValidation } from "../middlewares/validate";
 
 const router = express.Router();
 
+router.get("/", CategoryController.list);
 router.post("/", createValidation, handleValidation, CategoryController.create);
 
 export default router;

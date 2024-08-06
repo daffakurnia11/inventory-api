@@ -4,6 +4,13 @@ import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Category } from "../models/Category";
 
 class CategoryRepository {
+  async list(): Promise<Category[] | null> {
+    const [rows] = await db
+      .promise()
+      .query<RowDataPacket[]>("SELECT * FROM product_categories");
+    return rows as Category[];
+  }
+
   async findById(id: string): Promise<Category | null> {
     const [rows] = await db
       .promise()
@@ -20,7 +27,7 @@ class CategoryRepository {
       .promise()
       .query<ResultSetHeader>(
         "INSERT INTO product_categories (id, category_name, category_description) VALUES (?, ?, ?)",
-        [id, categoryData.name, categoryData.description]
+        [id, categoryData.category_name, categoryData.category_description]
       );
 
     const category = await this.findById(id);
