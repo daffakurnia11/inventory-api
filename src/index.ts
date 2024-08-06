@@ -8,6 +8,7 @@ import { responseHandler } from "./middlewares/responseHandler";
 import authRoute from "./routes/AuthRoute";
 import adminRoute from "./routes/AdminRoute";
 import categoryRoute from "./routes/CategoryRoute";
+import productRoute from "./routes/ProductRoute";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(responseHandler);
 app.use("/api", authRoute);
 app.use("/api/admin", authenticateToken, adminRoute);
 app.use("/api/category", authenticateToken, categoryRoute);
+app.use("/api/product", authenticateToken, productRoute)
 app.use(errorHandler);
 
 app.listen(port, () => {
