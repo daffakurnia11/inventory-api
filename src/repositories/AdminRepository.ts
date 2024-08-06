@@ -4,9 +4,9 @@ import { RowDataPacket, ResultSetHeader } from "mysql2";
 import { Admin } from "../models/Admin";
 
 class AdminRepository {
-  async create(adminData: Admin): Promise<number> {
+  async create(adminData: Admin): Promise<string> {
     const id = uuidv4();
-    const [result] = await db
+    await db
       .promise()
       .query<ResultSetHeader>(
         "INSERT INTO admins (id, first_name, last_name, email, birth_date, gender, password) VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -20,7 +20,7 @@ class AdminRepository {
           adminData.password,
         ]
       );
-    return result.insertId;
+    return id;
   }
 
   async findByEmail(email: string): Promise<RowDataPacket> {
@@ -30,7 +30,7 @@ class AdminRepository {
     return rows[0];
   }
 
-  async findById(id: number): Promise<Admin | null> {
+  async findById(id: string): Promise<Admin | null> {
     const [rows] = await db
       .promise()
       .query<RowDataPacket[]>("SELECT id, first_name AS firstName, last_name AS lastName, email, birth_date AS birthDate, gender FROM admins WHERE id = ?", [id]);
