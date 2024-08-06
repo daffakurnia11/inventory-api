@@ -1,3 +1,5 @@
+import { Category } from "./Category"
+
 export interface Product {
   id?: string
   product_name: string
@@ -7,4 +9,5 @@ export interface Product {
   stock: number
   created_at?: Date
   updated_at?: Date
+  category?: Category
 }

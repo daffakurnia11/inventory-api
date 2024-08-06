@@ -2,13 +2,27 @@ import { v4 as uuidv4 } from "uuid";
 import db from "../config/database";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 import { Category } from "../models/Category";
+import ProductRepository from "./ProductRepository";
 
 class CategoryRepository {
   async list(): Promise<Category[] | null> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT * FROM product_categories");
-    return rows as Category[];
+      .query<RowDataPacket[]>(
+        "SELECT * FROM product_categories ORDER BY created_at"
+      );
+
+    const categoriesWithProducts = await Promise.all(
+      rows.map(async (row) => {
+        const products = await ProductRepository.listByCategory(row.id);
+        return {
+          ...row,
+          products: products,
+        };
+      })
+    );
+
+    return categoriesWithProducts as Category[];
   }
 
   async findById(id: string): Promise<Category | null> {

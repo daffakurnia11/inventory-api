@@ -7,7 +7,20 @@ class ProductRepository {
   async list(): Promise<Product[] | null> {
     const [rows] = await db
       .promise()
-      .query<RowDataPacket[]>("SELECT * FROM products");
+      .query<RowDataPacket[]>(
+        "SELECT products.id, products.product_name, products.product_description, products.product_image, products.stock, products.created_at, products.updated_at, product_categories.category_name as category_name, product_categories.category_description as category_description FROM products JOIN product_categories ON products.category_id = product_categories.id ORDER BY products.created_at"
+      );
+
+    return rows as Product[];
+  }
+
+  async listByCategory(categoryId: string): Promise<Product[] | null> {
+    const [rows] = await db
+      .promise()
+      .query<RowDataPacket[]>(
+        "SELECT id, product_name, product_description, product_image, stock, created_at, updated_at FROM products WHERE category_id = ? ORDER BY created_at",
+        [categoryId]
+      );
     return rows as Product[];
   }
 
@@ -60,9 +73,7 @@ class ProductRepository {
   async delete(id: string): Promise<void> {
     await db
       .promise()
-      .query<ResultSetHeader>("DELETE FROM products WHERE id = ?", [
-        id,
-      ]);
+      .query<ResultSetHeader>("DELETE FROM products WHERE id = ?", [id]);
   }
 }
 
