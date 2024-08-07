@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
 import bodyParser from "body-parser";
 import { errorHandler } from "./middlewares/errorHandler";
 import { authenticateToken } from "./middlewares/auth";
@@ -15,6 +16,8 @@ dotenv.config();
 
 const app = express();
 const port = process.env.API_PORT || 3000;
+
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(responseHandler);

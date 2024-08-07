@@ -1,13 +1,14 @@
 class CategoryQueries {
   static listCategoriesQuery = `
     SELECT 
-      c.id AS ID, 
+      c.id AS id, 
       c.category_name, 
       c.category_description, 
       c.created_at, 
       c.updated_at,
-      COALESCE(
-        JSON_ARRAYAGG(
+      CASE 
+        WHEN COUNT(p.id) = 0 THEN NULL
+        ELSE JSON_ARRAYAGG(
           JSON_OBJECT(
             'id', p.id,
             'product_name', p.product_name,
@@ -17,8 +18,8 @@ class CategoryQueries {
             'created_at', p.created_at,
             'updated_at', p.updated_at
           )
-        ), JSON_ARRAY()
-      ) AS products
+        )
+      END AS products
     FROM 
       product_categories c 
     LEFT JOIN 
@@ -34,13 +35,14 @@ class CategoryQueries {
 
   static findCategoryByIdQuery = `
     SELECT 
-      c.id AS ID, 
+      c.id AS id, 
       c.category_name, 
       c.category_description, 
       c.created_at, 
       c.updated_at,
-      COALESCE(
-        JSON_ARRAYAGG(
+      CASE 
+        WHEN COUNT(p.id) = 0 THEN NULL
+        ELSE JSON_ARRAYAGG(
           JSON_OBJECT(
             'id', p.id,
             'product_name', p.product_name,
@@ -50,8 +52,8 @@ class CategoryQueries {
             'created_at', p.created_at,
             'updated_at', p.updated_at
           )
-        ), JSON_ARRAY()
-      ) AS products
+        )
+      END AS products
     FROM 
       product_categories c 
     LEFT JOIN 
